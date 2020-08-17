@@ -130,7 +130,7 @@ class Dataset(TorchtextDataset):
                       in zip(readers, data, dirs)]
         # :result: read_iters:
         print(read_iters[0].__next__()["src"])
-        print(read_iters[1].__next__()["tgt"])
+        print(read_iters[1].__next__()["tgt"].encode("utf8"))
         exit()
 
         # self.src_vocabs is used in collapse_copy_scores and Translator.py
