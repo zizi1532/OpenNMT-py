@@ -136,7 +136,10 @@ class Dataset(TorchtextDataset):
         self.src_vocabs = []
         examples = []
         for ex_dict in starmap(_join_dicts, zip(*read_iters)):
-            print("inputters/dataset_base.py", "Dataset", "__init__", "ex_dict", ex_dict, sep=": ")
+            try:
+                print("inputters/dataset_base.py", "Dataset", "__init__", "ex_dict", ex_dict, sep=": ")
+            except UnicodeEncodeError:
+                print("inputters/dataset_base.py", "Dataset", "__init__", "ex_dict", ex_dict.encode("utf8"), sep=": ")
             exit()
             if can_copy:
                 src_field = fields['src']
