@@ -140,7 +140,7 @@ class Dataset(TorchtextDataset):
                 print("inputters/dataset_base.py", "Dataset", "__init__", "ex_dict", ex_dict, sep=": ")
             except UnicodeEncodeError:
                 for k, v in ex_dict.items():
-                    if type(v)=="str:"
+                    if type(v)=="str":
                         print("inputters/dataset_base.py", "Dataset", "__init__", "ex_dict", "(k: {}, v: {})".format(k, v.encode("utf8")) , sep=": ")
                     else:
                         print("inputters/dataset_base.py", "Dataset", "__init__", "ex_dict", "(k: {}, v: {})".format(k, v) , sep=": ")
