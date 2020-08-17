@@ -1,0 +1,9 @@
+#!/bin/bash
+base_dir=$(dirname "$0")
+files=$base_dir"/conda_bin/onmt_*"
+echo $files
+for file in $files
+do
+    cp $file /opt/conda/bin/
+    echo "cp "$file" /opt/conda/bin/"
+done
