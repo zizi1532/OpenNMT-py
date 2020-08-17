@@ -124,11 +124,9 @@ class Dataset(TorchtextDataset):
                                   (return True if accepted otherwise False)
                                   Defaults to None.
         """
+        print("fields: ",fields);exit()
         self.sort_key = sort_key
         can_copy = 'src_map' in fields and 'alignment' in fields
-        print("*"*50)
-        print(can_copy)
-        print("*"*50);exit()
         read_iters = [r.read(sequences=dat[1], side=dat[0], _dir=dir_) for r, dat, dir_
                       in zip(readers, data, dirs)]
         # :result: read_iters: list of generator
@@ -139,6 +137,7 @@ class Dataset(TorchtextDataset):
         self.src_vocabs = []
         examples = []
         for ex_dict in starmap(_join_dicts, zip(*read_iters)):
+            # :param: ex_dict (dict): {"src": seq, "tgt": seq, "indices":0,1,etc} 
             if can_copy:
                 src_field = fields['src']
                 tgt_field = fields['tgt']
