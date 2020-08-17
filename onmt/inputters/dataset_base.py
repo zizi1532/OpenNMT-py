@@ -128,15 +128,15 @@ class Dataset(TorchtextDataset):
         can_copy = 'src_map' in fields and 'alignment' in fields
         read_iters = [r.read(sequences=dat[1], side=dat[0], _dir=dir_) for r, dat, dir_
                       in zip(readers, data, dirs)]
-        # :result: read_iters:
-        print(read_iters[0].__next__()["src"])
-        print(read_iters[1].__next__()["tgt"].encode("utf8"))
-        exit()
-
+        # :result: read_iters: list of generator
+        #          , e.g., read_iters[0]
+        #                  : generator yielding dictionary {"src/tgt": sequence, "indices": 0,1,stc}
+        
         # self.src_vocabs is used in collapse_copy_scores and Translator.py
         self.src_vocabs = []
         examples = []
         for ex_dict in starmap(_join_dicts, zip(*read_iters)):
+            print("inputters/dataset_base.py", "Dataset", "__init__", "ex_dict", sep=": ")
             if can_copy:
                 src_field = fields['src']
                 tgt_field = fields['tgt']
