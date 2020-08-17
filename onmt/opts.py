@@ -4,7 +4,9 @@ from __future__ import print_function
 import configargparse
 from onmt.models.sru import CheckSRU
 
-
+def my_custom_opts(parser):
+     parser.add('-null_custom_opts', '--null_custom_opts', default=None)
+     
 def config_opts(parser):
     parser.add('-config', '--config', required=False,
                is_config_file_arg=True, help='config file path')
