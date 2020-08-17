@@ -30,6 +30,7 @@ class TextDataReader(DataReaderBase):
         if isinstance(sequences, str):
             sequences = DataReaderBase._read_file(sequences)
         for i, seq in enumerate(sequences):
+            print("inputters/text_dataset.py", "TextDataReader", "read", seq, sep=": ")
             if isinstance(seq, six.binary_type):
                 seq = seq.decode("utf-8")
             yield {side: seq, "indices": i}
