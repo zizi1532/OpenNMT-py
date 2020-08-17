@@ -108,6 +108,19 @@ class Dataset(TorchtextDataset):
 
     def __init__(self, fields, readers, data, dirs, sort_key,
                  filter_pred=None):
+        """__init__ [summary]
+
+        Args:
+            fields ([type]): [description]
+            readers (TextDataReader): [description]
+            data ([type]): [description]
+            dirs ([type]): [description]
+            sort_key (method): "text_sort_key" method in inputters/text_dataset.py
+                               (return length of src seq(, and length of tgt seq))
+            filter_pred (method): partial method from "filter_example" in inputters/inputter.py
+                                  (return True if accepted otherwise False)
+                                  Defaults to None.
+        """
         self.sort_key = sort_key
         can_copy = 'src_map' in fields and 'alignment' in fields
 

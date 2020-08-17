@@ -41,8 +41,24 @@ def check_existing_pt_files(opt):
                              "to avoid overwriting them!\n" % path)
             sys.exit(1)
 
-
+# 'train', fields, src_reader, tgt_reader, opt
 def build_save_dataset(corpus_type, fields, src_reader, tgt_reader, opt):
+    """build_save_dataset [summary]
+
+    Args:
+        corpus_type (str): "text"
+        fields ([type]): [description]
+        src_reader (TextDataReader): [description]
+        tgt_reader (TextDataReader): [description]
+        opt ([type]): [description]
+
+    Returns:
+        [type]: [description]
+
+    Yields:
+        [type]: [description]
+    """
+    
     assert corpus_type in ['train', 'valid']
 
     if corpus_type == 'train':
@@ -57,6 +73,10 @@ def build_save_dataset(corpus_type, fields, src_reader, tgt_reader, opt):
     src_shards = split_corpus(src, opt.shard_size)
     tgt_shards = split_corpus(tgt, opt.shard_size)
     shard_pairs = zip(src_shards, tgt_shards)
+    # :result: src_shards, tgt_shards: file data generator
+    #                                  data separation: line by line
+    #                                  yield shard by shard (opt.shard_size)
+    # :result: shard_pairs: paired generator
     dataset_paths = []
     if (corpus_type == "train" or opt.filter_valid) and tgt is not None:
         filter_pred = partial(
@@ -64,16 +84,19 @@ def build_save_dataset(corpus_type, fields, src_reader, tgt_reader, opt):
             max_src_len=opt.src_seq_length, max_tgt_len=opt.tgt_seq_length)
     else:
         filter_pred = None
+    # :result: filter_pred: filter function (partial function from filter_example in inputters/inputter.py)
+    #                       return True if accepted otherwise False
     for i, (src_shard, tgt_shard) in enumerate(shard_pairs):
         assert len(src_shard) == len(tgt_shard)
         logger.info("Building shard %d." % i)
         dataset = inputters.Dataset(
             fields,
             readers=[src_reader, tgt_reader] if tgt_reader else [src_reader],
-            data=([("src", src_shard), ("tgt", tgt_shard)]
-                  if tgt_reader else [("src", src_shard)]),
+            data=[("src", src_shard), ("tgt", tgt_shard)]
+                  if tgt_reader else [("src", src_shard)],
             dirs=[opt.src_dir, None] if tgt_reader else [opt.src_dir],
             sort_key=inputters.str2sortkey[opt.data_type],
+            # :param: sort_key: text_sort_key method in inputters/text_dataset.py
             filter_pred=filter_pred
         )
 
@@ -124,11 +147,13 @@ def main(opt):
     init_logger(opt.log_file)
     logger.info("Extracting features...")
 
-    src_nfeats = count_features(opt.train_src) if opt.data_type == 'text' \
-        else 0
-    tgt_nfeats = count_features(opt.train_tgt)  # tgt always text so far
-    logger.info(" * number of source features: %d." % src_nfeats)
-    logger.info(" * number of target features: %d." % tgt_nfeats)
+    # src_nfeats = count_features(opt.train_src) if opt.data_type == 'text' \
+    #     else 0
+    # tgt_nfeats = count_features(opt.train_tgt)  # tgt always text so far
+    # logger.info(" * number of source features: d%d." % src_nfeats)
+    # logger.info(" * number of target features: %d." % tgt_nfeats)
+    src_nfeats = 0
+    tgt_nfeats = 0
 
     logger.info("Building `Fields` object...")
     fields = inputters.get_fields(
@@ -139,8 +164,10 @@ def main(opt):
         src_truncate=opt.src_seq_length_trunc,
         tgt_truncate=opt.tgt_seq_length_trunc)
 
-    src_reader = inputters.str2reader[opt.data_type].from_opt(opt)
-    tgt_reader = inputters.str2reader["text"].from_opt(opt)
+    # src_reader = inputters.str2reader[opt.data_type].from_opt(opt)
+    # inputters.str2reader["text"] >> TextDataReader (class) in inputters/text_dataset.py
+    src_reader = inputters.str2reader["text"].from_opt(opt) # construct object (nothing happen)
+    tgt_reader = inputters.str2reader["text"].from_opt(opt) # construct object (nothing happen)
 
     logger.info("Building & saving training data...")
     train_dataset_files = build_save_dataset(

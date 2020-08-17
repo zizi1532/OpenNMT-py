@@ -24,7 +24,7 @@ class DataReaderBase(object):
             opt (argparse.Namespace): The parsed arguments.
         """
 
-        return cls()
+        return cls() # call __init__ of object class 
 
     @classmethod
     def _read_file(cls, path):
