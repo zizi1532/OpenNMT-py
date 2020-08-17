@@ -139,7 +139,8 @@ class Dataset(TorchtextDataset):
             try:
                 print("inputters/dataset_base.py", "Dataset", "__init__", "ex_dict", ex_dict, sep=": ")
             except UnicodeEncodeError:
-                print("inputters/dataset_base.py", "Dataset", "__init__", "ex_dict", ex_dict.encode("utf8"), sep=": ")
+                for k, v in ex_dict.items():
+                    print("inputters/dataset_base.py", "Dataset", "__init__", "ex_dict", "(k: {}, v: {})".format(k, v.encode("utf8")) , sep=": ")
             exit()
             if can_copy:
                 src_field = fields['src']
