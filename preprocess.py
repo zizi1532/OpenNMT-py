@@ -92,8 +92,7 @@ def build_save_dataset(corpus_type, fields, src_reader, tgt_reader, opt):
         dataset = inputters.Dataset(
             fields,
             readers=[src_reader, tgt_reader] if tgt_reader else [src_reader],
-            data=[("src", src_shard), ("tgt", tgt_shard)]
-                  if tgt_reader else [("src", src_shard)],
+            data=[("src", src_shard), ("tgt", tgt_shard)] if tgt_reader else [("src", src_shard)],
             dirs=[opt.src_dir, None] if tgt_reader else [opt.src_dir],
             sort_key=inputters.str2sortkey[opt.data_type],
             # :param: sort_key: text_sort_key method in inputters/text_dataset.py

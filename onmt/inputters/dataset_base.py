@@ -112,8 +112,11 @@ class Dataset(TorchtextDataset):
 
         Args:
             fields ([type]): [description]
-            readers (TextDataReader): [description]
-            data ([type]): [description]
+            readers (list of TextDataReader 
+                in inputters/text_dataset.py): e.g., [src_reader, tgt_reader]
+                                              usage: src_reader.read(sequences, site, dir_)
+            data (list): [("src", src data), ("tgt", tgt data)] if tgt_reader else [("src", src data)]
+                         src/tgt data: data separation "\n"
             dirs ([type]): [description]
             sort_key (method): "text_sort_key" method in inputters/text_dataset.py
                                (return length of src seq(, and length of tgt seq))
@@ -123,8 +126,10 @@ class Dataset(TorchtextDataset):
         """
         self.sort_key = sort_key
         can_copy = 'src_map' in fields and 'alignment' in fields
-
-        read_iters = [r.read(dat[1], dat[0], dir_) for r, dat, dir_
+        print("inputters/datset_base.py", "Dataset", "__init__", "data[0][0]    ", data[0][0], sep=": ")
+        print("inputters/datset_base.py", "Dataset", "__init__", "data[0][1][:5]", data[0][1][:5], sep=": ")
+        print()
+        read_iters = [r.read(sequences=dat[1], side=dat[0], dir_=dir_) for r, dat, dir_
                       in zip(readers, data, dirs)]
 
         # self.src_vocabs is used in collapse_copy_scores and Translator.py
