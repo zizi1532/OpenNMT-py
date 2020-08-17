@@ -129,7 +129,8 @@ class Dataset(TorchtextDataset):
         read_iters = [r.read(sequences=dat[1], side=dat[0], _dir=dir_) for r, dat, dir_
                       in zip(readers, data, dirs)]
         # :result: read_iters:
-        print(read_iters[0]["src"][:5])
+        print(read_iters[0].next()["src"])
+        print(read_iters[0].next()["tgt"])
         exit()
 
         # self.src_vocabs is used in collapse_copy_scores and Translator.py
