@@ -136,7 +136,8 @@ class Dataset(TorchtextDataset):
         self.src_vocabs = []
         examples = []
         for ex_dict in starmap(_join_dicts, zip(*read_iters)):
-            print("inputters/dataset_base.py", "Dataset", "__init__", "ex_dict", sep=": ")
+            print("inputters/dataset_base.py", "Dataset", "__init__", "ex_dict", ex_dict, sep=": ")
+            exit()
             if can_copy:
                 src_field = fields['src']
                 tgt_field = fields['tgt']
