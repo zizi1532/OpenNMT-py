@@ -126,6 +126,9 @@ class Dataset(TorchtextDataset):
         """
         self.sort_key = sort_key
         can_copy = 'src_map' in fields and 'alignment' in fields
+        print("*"*50)
+        print(can_copy)
+        print("*"*50);exit()
         read_iters = [r.read(sequences=dat[1], side=dat[0], _dir=dir_) for r, dat, dir_
                       in zip(readers, data, dirs)]
         # :result: read_iters: list of generator
@@ -136,15 +139,6 @@ class Dataset(TorchtextDataset):
         self.src_vocabs = []
         examples = []
         for ex_dict in starmap(_join_dicts, zip(*read_iters)):
-            try:
-                print("inputters/dataset_base.py", "Dataset", "__init__", "ex_dict", ex_dict, sep=": ")
-            except UnicodeEncodeError:
-                for k, v in ex_dict.items():
-                    if type(v)=="str":
-                        print("inputters/dataset_base.py", "Dataset", "__init__", "ex_dict", "(k: {}, v: {})".format(k, v.encode("utf8")) , sep=": ")
-                    else:
-                        print("inputters/dataset_base.py", "Dataset", "__init__", "ex_dict", "(k: {}, v: {})".format(k, v) , sep=": ")
-            exit()
             if can_copy:
                 src_field = fields['src']
                 tgt_field = fields['tgt']
