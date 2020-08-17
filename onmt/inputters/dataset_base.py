@@ -124,7 +124,9 @@ class Dataset(TorchtextDataset):
                                   (return True if accepted otherwise False)
                                   Defaults to None.
         """
-        print("fields: ",fields);exit()
+        """ print("fields: ",fields);exit()
+        fields:  {'src': <onmt.inputters.text_dataset.TextMultiField object at 0x7f42bf622860>, 'tgt': <onmt.inputters.text_dataset.TextMultiField object at 0x7f42bf622eb8>, 'indices': <torchtext.data.field.Field object at 0x7f42bf622e48>}
+        """
         self.sort_key = sort_key
         can_copy = 'src_map' in fields and 'alignment' in fields
         read_iters = [r.read(sequences=dat[1], side=dat[0], _dir=dir_) for r, dat, dir_
@@ -137,7 +139,7 @@ class Dataset(TorchtextDataset):
         self.src_vocabs = []
         examples = []
         for ex_dict in starmap(_join_dicts, zip(*read_iters)):
-            # :param: ex_dict (dict): {"src": seq, "tgt": seq, "indices":0,1,etc} 
+            # :param: ex_dict (dict): {"src": seq, "tgt": seq, "indices":int} 
             if can_copy:
                 src_field = fields['src']
                 tgt_field = fields['tgt']
@@ -146,13 +148,16 @@ class Dataset(TorchtextDataset):
                     ex_dict, src_field.base_field, tgt_field.base_field)
                 self.src_vocabs.append(src_ex_vocab)
             ex_fields = {k: [(k, v)] for k, v in fields.items() if
-                         k in ex_dict}
-            ex = Example.fromdict(ex_dict, ex_fields)
+                         k in ex_dict} # torchtext.data.Field format
+            ex = Example.fromdict(data=ex_dict, fields=ex_fields) # torchtext.data.Example: 
+                                                                  #  Defines a single training or test example.
+                                                                  #  Stores each column of the example as an attribute.
             examples.append(ex)
 
         # fields needs to have only keys that examples have as attrs
         fields = []
         for _, nf_list in ex_fields.items():
+            print(nf_list);exit()
             assert len(nf_list) == 1
             fields.append(nf_list[0])
 
